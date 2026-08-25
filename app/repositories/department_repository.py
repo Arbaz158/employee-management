@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
+
+from app.models import department
 from app.models.department import Department
-from app.schemas.department import DepartmentCreate
+from app.schemas.department import DepartmentCreate, DepartmentUpdate
 
 
 class DepartmentRepository:
@@ -15,3 +17,7 @@ class DepartmentRepository:
         return department
 
 
+    def update(self, db: Session, department: Department ,department_data: DepartmentUpdate) -> Department:
+        department.name = department_data.name
+        db.commit()
+        return department
