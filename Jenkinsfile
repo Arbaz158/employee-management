@@ -81,8 +81,16 @@ pipeline {
 
                 withCredentials([
                     string(
-                        credentialsId: 'employee-database-url',
-                        variable: 'DATABASE_URL'
+                        credentialsId: 'employee-db-username',
+                        variable: 'DB_USERNAME'
+                    ),
+                    string(
+                        credentialsId: 'employee-db-password',
+                        variable: 'DB_PASSWORD'
+                    ),
+                    string(
+                        credentialsId: 'employee-db-name',
+                        variable: 'DB_NAME'
                     )
                 ]) {
 
