@@ -76,87 +76,87 @@ pipeline {
             }
         }
 
-//         stage('Deploy') {
-//             steps {
-//
-//                 withCredentials([
-//                     string(
-//                         credentialsId: 'employee-database-url',
-//                         variable: 'DATABASE_URL'
-//                     )
-//                 ]) {
-//
-//                     sh '''
-//                         set -e
-//
-//                         echo "Starting deployment..."
-//
-//                         echo "Checking Docker network..."
-//
-//                         if ! docker network inspect ${DOCKER_NETWORK} >/dev/null 2>&1; then
-//                             echo "Docker network ${DOCKER_NETWORK} does not exist."
-//                             echo "Creating Docker network..."
-//
-//                             docker network create ${DOCKER_NETWORK}
-//                         else
-//                             echo "Docker network ${DOCKER_NETWORK} already exists."
-//                         fi
-//
-//                         echo "Checking MySQL container..."
-//
-//                         if docker ps --format '{{.Names}}' | grep -q "^mysql-server$"; then
-//                             echo "MySQL container is running."
-//                         else
-//                             echo "WARNING: mysql-server is not currently running."
-//                         fi
-//
-//                         echo "Connecting MySQL container to network..."
-//
-//                         docker network connect ${DOCKER_NETWORK} mysql-server 2>/dev/null || true
-//
-//                         echo "Stopping existing application container..."
-//
-//                         docker stop ${CONTAINER_NAME} 2>/dev/null || true
-//
-//                         echo "Removing existing application container..."
-//
-//                         docker rm ${CONTAINER_NAME} 2>/dev/null || true
-//
-//                         echo "Starting new application container..."
-//
-//                         docker run -d \
-//                             --name ${CONTAINER_NAME} \
-//                             --network ${DOCKER_NETWORK} \
-//                             -p ${HOST_PORT}:${CONTAINER_PORT} \
-//                             -e DATABASE_URL="$DATABASE_URL" \
-//                             ${IMAGE_NAME}:${IMAGE_TAG}
-//
-//                         echo "Application container started."
-//
-//                         echo "Waiting for application to start..."
-//
-//                         sleep 5
-//
-//                         echo "Checking container status..."
-//
-//                         if [ "$(docker inspect -f '{{.State.Running}}' ${CONTAINER_NAME})" = "true" ]; then
-//                             echo "Application container is running successfully."
-//                         else
-//                             echo "Application container failed to start."
-//                             echo "Container logs:"
-//                             docker logs ${CONTAINER_NAME}
-//                             exit 1
-//                         fi
-//
-//                         echo "Running containers:"
-//
-//                         docker ps --filter "name=${CONTAINER_NAME}"
-//
-//                         echo "Deployment completed successfully."
-//                     '''
-//                 }
-//             }
-//         }
+        stage('Deploy') {
+            steps {
+
+                withCredentials([
+                    string(
+                        credentialsId: 'employee-database-url',
+                        variable: 'DATABASE_URL'
+                    )
+                ]) {
+
+                    sh '''
+                        set -e
+
+                        echo "Starting deployment..."
+
+                        echo "Checking Docker network..."
+
+                        if ! docker network inspect ${DOCKER_NETWORK} >/dev/null 2>&1; then
+                            echo "Docker network ${DOCKER_NETWORK} does not exist."
+                            echo "Creating Docker network..."
+
+                            docker network create ${DOCKER_NETWORK}
+                        else
+                            echo "Docker network ${DOCKER_NETWORK} already exists."
+                        fi
+
+                        echo "Checking MySQL container..."
+
+                        if docker ps --format '{{.Names}}' | grep -q "^mysql-server$"; then
+                            echo "MySQL container is running."
+                        else
+                            echo "WARNING: mysql-server is not currently running."
+                        fi
+
+                        echo "Connecting MySQL container to network..."
+
+                        docker network connect ${DOCKER_NETWORK} mysql-server 2>/dev/null || true
+
+                        echo "Stopping existing application container..."
+
+                        docker stop ${CONTAINER_NAME} 2>/dev/null || true
+
+                        echo "Removing existing application container..."
+
+                        docker rm ${CONTAINER_NAME} 2>/dev/null || true
+
+                        echo "Starting new application container..."
+
+                        docker run -d \
+                            --name ${CONTAINER_NAME} \
+                            --network ${DOCKER_NETWORK} \
+                            -p ${HOST_PORT}:${CONTAINER_PORT} \
+                            -e DATABASE_URL="$DATABASE_URL" \
+                            ${IMAGE_NAME}:${IMAGE_TAG}
+
+                        echo "Application container started."
+
+                        echo "Waiting for application to start..."
+
+                        sleep 5
+
+                        echo "Checking container status..."
+
+                        if [ "$(docker inspect -f '{{.State.Running}}' ${CONTAINER_NAME})" = "true" ]; then
+                            echo "Application container is running successfully."
+                        else
+                            echo "Application container failed to start."
+                            echo "Container logs:"
+                            docker logs ${CONTAINER_NAME}
+                            exit 1
+                        fi
+
+                        echo "Running containers:"
+
+                        docker ps --filter "name=${CONTAINER_NAME}"
+
+                        echo "Deployment completed successfully."
+                    '''
+                }
+            }
+        }
     }
 
     post {
