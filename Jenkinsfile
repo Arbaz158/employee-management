@@ -136,7 +136,11 @@ pipeline {
                             --name ${CONTAINER_NAME} \
                             --network ${DOCKER_NETWORK} \
                             -p ${HOST_PORT}:${CONTAINER_PORT} \
-                            -e DATABASE_URL="$DATABASE_URL" \
+                            -e DB_HOST="mysql-server" \
+                            -e DB_PORT="3306" \
+                            -e DB_USERNAME="$DB_USERNAME" \
+                            -e DB_PASSWORD="$DB_PASSWORD" \
+                            -e DB_NAME="$DB_NAME" \
                             ${IMAGE_NAME}:${IMAGE_TAG}
 
                         echo "Application container started."
